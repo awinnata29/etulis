@@ -10,8 +10,21 @@ export interface LayoutOptions {
   noIndex?: boolean;
   csrfToken?: string;
   showPromotion?: boolean;
+  customInlinePromotion?: boolean;
   scripts?: string;
   jsonLd?: object | object[];
+}
+
+export function getInlinePromotionsHtml(): string {
+  return `
+<aside class="inline-promotions wrap" aria-label="Promosi">
+ <div class="inline-promotion-head"><span>Promosi</span><span>Geser untuk melihat lainnya</span></div>
+ <div class="inline-promotion-list">
+  <a href="https://akundigital.id" target="_blank" rel="noopener sponsored"><img src="/images/ads/ad1.png" alt="Promosi AkunDigital" width="2172" height="724" loading="lazy"></a>
+  <a href="https://akundigital.id" target="_blank" rel="noopener sponsored"><img src="/images/ads/ad2.png" alt="Promosi AkunDigital" width="2172" height="724" loading="lazy"></a>
+ </div>
+</aside>
+`;
 }
 
 export function renderLayout(content: string, options: LayoutOptions = {}): string {
@@ -34,6 +47,7 @@ export function renderLayout(content: string, options: LayoutOptions = {}): stri
   const ogType = options.ogType || 'website';
   const robots = options.noIndex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
   const showPromotion = options.showPromotion !== false;
+  const customInlinePromotion = options.customInlinePromotion === true;
   const csrfToken = options.csrfToken || '';
   const currentYear = new Date().getFullYear();
 
@@ -77,7 +91,7 @@ export function renderLayout(content: string, options: LayoutOptions = {}): stri
   const jsonLdData = options.jsonLd ? options.jsonLd : defaultJsonLd;
   const jsonLdScript = `<script type="application/ld+json">${JSON.stringify(jsonLdData)}</script>`;
 
-  const promotionHtml = `
+  const desktopSidePromotionsHtml = `
 <aside class="side-promotion side-promotion-left" aria-label="Promosi">
  <span>Promosi</span>
  <a href="https://akundigital.id" target="_blank" rel="noopener sponsored">
@@ -89,13 +103,6 @@ export function renderLayout(content: string, options: LayoutOptions = {}): stri
  <a href="https://akundigital.id" target="_blank" rel="noopener sponsored">
   <img src="/images/ads/ads2.png" alt="Promosi AkunDigital Marketplace" width="758" height="2075" loading="lazy">
  </a>
-</aside>
-<aside class="inline-promotions wrap" aria-label="Promosi">
- <div class="inline-promotion-head"><span>Promosi</span><span>Geser untuk melihat lainnya</span></div>
- <div class="inline-promotion-list">
-  <a href="https://akundigital.id" target="_blank" rel="noopener sponsored"><img src="/images/ads/ad1.png" alt="Promosi AkunDigital" width="2172" height="724" loading="lazy"></a>
-  <a href="https://akundigital.id" target="_blank" rel="noopener sponsored"><img src="/images/ads/ad2.png" alt="Promosi AkunDigital" width="2172" height="724" loading="lazy"></a>
- </div>
 </aside>
 `;
 
@@ -160,7 +167,8 @@ export function renderLayout(content: string, options: LayoutOptions = {}): stri
  </div>
 </header>
 <main>${content}</main>
-${showPromotion ? promotionHtml : ''}
+${showPromotion ? desktopSidePromotionsHtml : ''}
+${showPromotion && !customInlinePromotion ? getInlinePromotionsHtml() : ''}
 <footer class="site-footer">
  <div class="footer-shell wrap">
   <div class="footer-main">

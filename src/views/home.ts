@@ -1,5 +1,5 @@
 import { escapeHtml } from '../utils/format';
-import { renderLayout } from './layout';
+import { getInlinePromotionsHtml, renderLayout } from './layout';
 
 export interface HomeViewProps {
   csrfToken: string;
@@ -93,8 +93,13 @@ export function renderHome(props: HomeViewProps): string {
   <div class="submit-row"><p>Link acak akan dibuat otomatis dan siap dibagikan.</p><button class="btn" type="submit">Terbitkan catatan <span>↗</span></button></div>
  </form>
 
- <!-- Rich SEO Semantic Content Section -->
- <section class="seo-content-section" style="margin-top: 60px;">
+ <!-- Banner Promosi Mobile (Tepat di Bawah Form / di Atas Fitur Utama) -->
+ <div style="margin-top: 36px;">
+   ${getInlinePromotionsHtml()}
+ </div>
+
+ <!-- Rich SEO Semantic Content Section (Fitur Utama Etulis) -->
+ <section class="seo-content-section" style="margin-top: 30px;">
    <div style="text-align: center; max-width: 760px; margin: 0 auto 45px;">
      <span class="eyebrow">FITUR UTAMA ETULIS</span>
      <h2 style="font-size: 28px; letter-spacing: -1px; margin: 6px 0 12px; color: var(--ink);">Mengapa Memilih Etulis Notepad Online?</h2>
@@ -189,6 +194,7 @@ export function renderHome(props: HomeViewProps): string {
     canonicalUrl: 'https://etulis.com/',
     csrfToken: props.csrfToken,
     showPromotion: true,
+    customInlinePromotion: true,
     scripts,
     jsonLd: [
       {
