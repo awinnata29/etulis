@@ -1,6 +1,18 @@
-@extends('layouts.app')
+import { Note } from '../types';
+import { escapeHtml } from '../utils/format';
+import { renderLayout } from './layout';
 
-@section('content')
+export interface UnlockViewProps {
+  note: Note;
+  csrfToken: string;
+  error?: string;
+}
+
+export function renderUnlock(props: UnlockViewProps): string {
+  const { note, csrfToken, error } = props;
+  const errorHtml = error ? `<div class="unlock-error" role="alert">${escapeHtml(error)}</div>` : '';
+
+  const content = `
 <section class="unlock-page wrap">
     <div class="unlock-card">
         <div class="unlock-visual" aria-hidden="true">
@@ -26,8 +38,8 @@
                 <p>Pemilik catatan melindungi isi tautan ini. Masukkan password untuk melanjutkan.</p>
             </div>
 
-            <form method="POST" action="{{ route('notes.unlock', $note) }}">
-                @csrf
+            <form method="POST" action="/${note.slug}/buka">
+                <input type="hidden" name="_token" value="${escapeHtml(csrfToken)}">
                 <div class="unlock-label-row">
                     <label for="note-password">Password</label>
                     <button id="toggle-note-password" type="button">Tampilkan</button>
@@ -36,9 +48,7 @@
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10" stroke="currentColor" stroke-width="1.7"/></svg>
                     <input id="note-password" type="password" name="password" autofocus autocomplete="current-password" placeholder="Masukkan password" required>
                 </div>
-                @error('password')
-                    <div class="unlock-error" role="alert">{{ $message }}</div>
-                @enderror
+                ${errorHtml}
                 <button class="unlock-submit" type="submit"><span>Buka catatan</span><i></i></button>
             </form>
 
@@ -46,9 +56,9 @@
         </div>
     </div>
 </section>
-@endsection
+`;
 
-@push('scripts')
+  const scripts = `
 <script>
 const toggleNotePassword = document.querySelector('#toggle-note-password');
 const notePassword = document.querySelector('#note-password');
@@ -59,4 +69,12 @@ toggleNotePassword.addEventListener('click', () => {
     notePassword.focus();
 });
 </script>
-@endpush
+`;
+
+  return renderLayout(content, {
+    title: 'Catatan Terlindungi',
+    csrfToken,
+    showPromotion: true,
+    scripts,
+  });
+}

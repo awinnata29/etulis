@@ -1,5 +1,3 @@
-import './bootstrap';
-
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-scroll-content]').forEach((content) => {
         const hint = content.closest('.note-scroll-shell')?.querySelector('[data-scroll-hint]');

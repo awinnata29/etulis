@@ -1,6 +1,24 @@
-@extends('layouts.app')
+import { Note } from '../types';
+import { diffForHumans, escapeHtml } from '../utils/format';
+import { renderLayout } from './layout';
 
-@section('content')
+export interface CreatedViewProps {
+  note: Note;
+  origin: string;
+  manageToken?: string | null;
+  csrfToken?: string;
+}
+
+export function renderCreated(props: CreatedViewProps): string {
+  const { note, origin, manageToken } = props;
+  const noteUrl = `${origin}/${note.slug}`;
+  const manageUrl = manageToken ? `${origin}/kelola/${note.slug}/${manageToken}` : '';
+
+  const expiryText = note.expires_at
+    ? `Berakhir ${diffForHumans(note.expires_at)}`
+    : 'Tidak kedaluwarsa';
+
+  const content = `
 <section class="created-page wrap">
     <div class="created-card">
         <div class="created-hero">
@@ -20,16 +38,18 @@
 
             <div class="created-copy">
                 <span class="created-link-icon" aria-hidden="true">↗</span>
-                <input id="public-link" readonly value="{{ route('notes.show', $note) }}" aria-label="Tautan publik catatan">
+                <input id="public-link" readonly value="${escapeHtml(noteUrl)}" aria-label="Tautan publik catatan">
                 <button type="button" data-copy-target="public-link"><span>Salin tautan</span></button>
             </div>
 
             <div class="created-status">
-                <div><span class="status-icon">{{ $note->password ? '◆' : '○' }}</span><p><small>AKSES</small><strong>{{ $note->password ? 'Dilindungi password' : 'Catatan publik' }}</strong></p></div>
-                <div><span class="status-icon">⌁</span><p><small>MASA AKTIF</small><strong>{{ $note->expires_at ? 'Berakhir '.$note->expires_at->diffForHumans() : 'Tidak kedaluwarsa' }}</strong></p></div>
+                <div><span class="status-icon">${note.password ? '◆' : '○'}</span><p><small>AKSES</small><strong>${note.password ? 'Dilindungi password' : 'Catatan publik'}</strong></p></div>
+                <div><span class="status-icon">⌁</span><p><small>MASA AKTIF</small><strong>${escapeHtml(expiryText)}</strong></p></div>
             </div>
 
-            @if(session('manage_token'))
+            ${
+              manageToken
+                ? `
                 <div class="created-manage">
                     <div class="created-manage-copy">
                         <span>TAUTAN PENGELOLAAN</span>
@@ -37,26 +57,30 @@
                         <p>Gunakan untuk mengubah password catatan. Jangan bagikan tautan ini kepada orang lain.</p>
                     </div>
                     <div class="created-copy compact">
-                        <input id="manage-link" readonly value="{{ route('notes.manage', [$note, session('manage_token')]) }}" aria-label="Tautan pengelolaan catatan">
+                        <input id="manage-link" readonly value="${escapeHtml(manageUrl)}" aria-label="Tautan pengelolaan catatan">
                         <button type="button" data-copy-target="manage-link" aria-label="Salin tautan pengelolaan"><span>Salin</span></button>
                     </div>
                 </div>
-            @endif
+            `
+                : ''
+            }
 
             <div class="created-actions">
-                <a class="created-primary" href="{{ route('notes.show', $note) }}">Lihat catatan <i></i></a>
-                @if(session('manage_token'))
-                    <a class="created-secondary" href="{{ route('notes.manage', [$note, session('manage_token')]) }}">Kelola password</a>
-                @endif
-                <a class="created-quiet" href="{{ route('home') }}">Buat catatan baru</a>
+                <a class="created-primary" href="/${note.slug}">Lihat catatan <i></i></a>
+                ${
+                  manageToken
+                    ? `<a class="created-secondary" href="/kelola/${note.slug}/${manageToken}">Kelola password</a>`
+                    : ''
+                }
+                <a class="created-quiet" href="/">Buat catatan baru</a>
             </div>
         </div>
     </div>
     <p class="created-footnote"><span>✓</span> Tautan publik dapat langsung dibuka tanpa akun etulis.</p>
 </section>
-@endsection
+`;
 
-@push('scripts')
+  const scripts = `
 <script>
 document.querySelectorAll('[data-copy-target]').forEach((button) => {
     button.addEventListener('click', async () => {
@@ -79,4 +103,12 @@ document.querySelectorAll('[data-copy-target]').forEach((button) => {
     });
 });
 </script>
-@endpush
+`;
+
+  return renderLayout(content, {
+    title: 'Catatan Siap Dibagikan',
+    csrfToken: props.csrfToken,
+    showPromotion: true,
+    scripts,
+  });
+}

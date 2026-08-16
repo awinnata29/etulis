@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "etulis",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-07-18",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "etulis-db",
+      "database_id": "f15760cf-ee51-44a8-8503-a106f8c84344",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "ADMIN_PATH": "backend",
+    "ADMIN_USERNAME": "admin"
+  }
+}
