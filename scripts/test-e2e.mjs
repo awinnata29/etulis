@@ -112,12 +112,7 @@ async function runTests() {
     const createdHtml1 = await createdRes1.text();
     assert(createdHtml1.includes('CATATAN BERHASIL DITERBITKAN'), 'Success headline rendered');
     assert(createdHtml1.includes(slug1), 'Public link contains slug');
-    assert(createdHtml1.includes('TAUTAN PENGELOLAAN'), 'Manage link rendered for creator');
-
-    // Extract manage token from created page
-    const manageMatch = createdHtml1.match(new RegExp(`/kelola/${slug1}/([a-f0-9]+)`));
-    const manageToken1 = manageMatch ? manageMatch[1] : null;
-    assert(manageToken1 && manageToken1.length >= 32, `Manage token extracted: ${manageToken1?.substring(0, 10)}...`);
+    assert(!createdHtml1.includes('TAUTAN PENGELOLAAN'), 'Manage link is removed as requested');
 
     // ----------------------------------------------------
     // TEST 4: View Public Note

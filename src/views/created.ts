@@ -10,9 +10,8 @@ export interface CreatedViewProps {
 }
 
 export function renderCreated(props: CreatedViewProps): string {
-  const { note, origin, manageToken } = props;
+  const { note, origin } = props;
   const noteUrl = `${origin}/${note.slug}`;
-  const manageUrl = manageToken ? `${origin}/kelola/${note.slug}/${manageToken}` : '';
 
   const expiryText = note.expires_at
     ? `Berakhir ${diffForHumans(note.expires_at)}`
@@ -47,31 +46,8 @@ export function renderCreated(props: CreatedViewProps): string {
                 <div><span class="status-icon">⌁</span><p><small>MASA AKTIF</small><strong>${escapeHtml(expiryText)}</strong></p></div>
             </div>
 
-            ${
-              manageToken
-                ? `
-                <div class="created-manage">
-                    <div class="created-manage-copy">
-                        <span>TAUTAN PENGELOLAAN</span>
-                        <h3>Simpan tautan khusus ini</h3>
-                        <p>Gunakan untuk mengubah password catatan. Jangan bagikan tautan ini kepada orang lain.</p>
-                    </div>
-                    <div class="created-copy compact">
-                        <input id="manage-link" readonly value="${escapeHtml(manageUrl)}" aria-label="Tautan pengelolaan catatan">
-                        <button type="button" data-copy-target="manage-link" aria-label="Salin tautan pengelolaan"><span>Salin</span></button>
-                    </div>
-                </div>
-            `
-                : ''
-            }
-
             <div class="created-actions">
                 <a class="created-primary" href="/${note.slug}">Lihat catatan <i></i></a>
-                ${
-                  manageToken
-                    ? `<a class="created-secondary" href="/kelola/${note.slug}/${manageToken}">Kelola password</a>`
-                    : ''
-                }
                 <a class="created-quiet" href="/">Buat catatan baru</a>
             </div>
         </div>
