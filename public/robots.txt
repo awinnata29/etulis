@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Allow: /dist/
+Allow: /images/
+Disallow: /backend/
+Disallow: /kelola/
+
+Sitemap: https://etulis.com/sitemap.xml

@@ -89,6 +89,42 @@ function render410(): string {
 }
 
 // ----------------------------------------------------
+// SEO: SITEMAP & ROBOTS
+// ----------------------------------------------------
+
+app.get('/sitemap.xml', (c) => {
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://etulis.com/</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400',
+  });
+});
+
+app.get('/robots.txt', (c) => {
+  const robots = `User-agent: *
+Allow: /
+Allow: /dist/
+Allow: /images/
+Disallow: /backend/
+Disallow: /kelola/
+
+Sitemap: https://etulis.com/sitemap.xml
+`;
+  return c.text(robots, 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400',
+  });
+});
+
+// ----------------------------------------------------
 // 1. HOME & CREATE NOTE
 // ----------------------------------------------------
 

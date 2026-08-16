@@ -48,8 +48,15 @@ export function renderNote(props: NoteViewProps): string {
 </article>
 `;
 
+  const metaDesc = note.content.length > 150
+    ? note.content.substring(0, 150).replace(/\s+/g, ' ') + '...'
+    : note.content.replace(/\s+/g, ' ');
+
   return renderLayout(content, {
-    title: note.title || 'Catatan',
+    title: note.title ? `${note.title}` : 'Catatan',
+    description: metaDesc || 'Buka dan baca catatan teks di etulis notepad online.',
+    canonicalUrl: `https://etulis.com/${note.slug}`,
+    ogType: 'article',
     csrfToken: props.csrfToken,
     showPromotion: true,
   });
