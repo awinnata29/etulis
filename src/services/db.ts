@@ -143,7 +143,7 @@ let editLogsTableChecked = false;
 export async function ensureEditLogsTable(db: D1Database): Promise<void> {
   if (editLogsTableChecked) return;
   try {
-    await db.exec(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS note_edit_logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         note_id INTEGER NOT NULL,
@@ -155,15 +155,14 @@ export async function ensureEditLogsTable(db: D1Database): Promise<void> {
         new_content TEXT NOT NULL,
         diff_summary TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      );
-      CREATE INDEX IF NOT EXISTS idx_edit_logs_note_id ON note_edit_logs(note_id);
-      CREATE INDEX IF NOT EXISTS idx_edit_logs_created_at ON note_edit_logs(created_at);
-    `);
+      )
+    `).run();
     editLogsTableChecked = true;
   } catch (e) {
     console.error('Error ensuring note_edit_logs table:', e);
   }
 }
+
 
 /**
  * Create a new edit log record.
