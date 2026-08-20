@@ -48,6 +48,18 @@ import { renderLayout } from './views/layout';
 
 const app = new Hono<{ Bindings: Env }>();
 
+app.onError((err, c) => {
+  console.error('Unhandled Application Error:', err);
+  const content = `
+<section class="created-page wrap" style="text-align:center; padding: 100px 0;">
+  <h1 style="font-size: 64px; margin-bottom: 12px; color: var(--danger);">500</h1>
+  <h2 style="font-size: 24px; margin-bottom: 20px; color: var(--ink);">Terjadi Kesalahan</h2>
+  <p style="color: var(--muted); margin-bottom: 30px;">Sistem mengalami kendala saat memproses permintaan. Silakan refresh halaman.</p>
+  <a class="btn" href="/">Kembali ke Beranda</a>
+</section>
+`;
+  return c.html(renderLayout(content, { title: '500 - Error', noIndex: true }), 500);
+});
 
 // Helper to get admin path prefix
 function getAdminPath(c: any): string {
