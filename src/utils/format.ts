@@ -118,3 +118,44 @@ export function isDatePast(dateInput: string | null): boolean {
   const d = new Date(dateInput);
   return !isNaN(d.getTime()) && d.getTime() <= Date.now();
 }
+
+/**
+ * Count words in a string
+ */
+export function countWords(text: string | null | undefined): number {
+  if (!text) return 0;
+  const trimmed = text.trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
+}
+
+/**
+ * Generate human-readable summary of differences between old and new version.
+ */
+export function computeDiffSummary(
+  oldTitle: string | null | undefined,
+  newTitle: string | null | undefined,
+  oldContent: string,
+  newContent: string
+): string {
+  const parts: string[] = [];
+  const titleChanged = (oldTitle || '') !== (newTitle || '');
+  if (titleChanged) {
+    parts.push('Judul diubah');
+  }
+
+  const charDiff = newContent.length - oldContent.length;
+  const wordDiff = countWords(newContent) - countWords(oldContent);
+
+  const charStr = charDiff > 0 ? `+${charDiff} karakter` : charDiff < 0 ? `${charDiff} karakter` : 'Panjang teks sama';
+  const wordStr = wordDiff > 0 ? `+${wordDiff} kata` : wordDiff < 0 ? `${wordDiff} kata` : '0 kata';
+
+  if (oldContent !== newContent) {
+    parts.push(`${charStr} (${wordStr})`);
+  } else if (!titleChanged) {
+    parts.push('Tidak ada perubahan teks');
+  }
+
+  return parts.join(' • ');
+}
+

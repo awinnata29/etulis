@@ -42,3 +42,25 @@ export interface SessionData {
     manage_token?: string;
   };
 }
+export interface NoteEditLog {
+  id: number;
+  note_id: number;
+  editor_type: 'admin' | 'guest';
+  editor_ip: string | null;
+  old_title: string | null;
+  new_title: string | null;
+  old_content: string;
+  new_content: string;
+  diff_summary: string | null;
+  created_at: string;
+  // Joined note fields for logs list
+  note_slug?: string;
+  note_current_title?: string | null;
+}
+
+export interface AdminEditLogStats {
+  totalEdits: number;
+  adminEdits: number;
+  guestEdits: number;
+  uniqueNotesEdited: number;
+}

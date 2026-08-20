@@ -17,7 +17,10 @@ export function renderManage(props: ManageViewProps): string {
 
   const content = `
 <section class="manage-note-page wrap">
- <a class="settings-back" href="/${note.slug}">Kembali ke catatan</a>
+ <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+   <a class="settings-back" href="/${note.slug}" style="margin:0;">← Kembali ke catatan</a>
+   <a class="btn secondary" href="/kelola/${note.slug}/${escapeHtml(token)}/edit" style="font-size:10px; padding:7px 12px; box-shadow:none;">✎ Edit Isi Catatan</a>
+ </div>
  <div class="settings-card">
   <div class="settings-heading"><span>KELOLA CATATAN</span><h1>Ubah password</h1><p>/${escapeHtml(note.slug)}</p></div>
   ${successHtml}

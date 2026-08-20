@@ -6,11 +6,17 @@ export interface NoteViewProps {
   note: Note;
   manageToken?: string | null;
   csrfToken?: string;
+  success?: string;
 }
 
 export function renderNote(props: NoteViewProps): string {
-  const { note, manageToken } = props;
+  const { note, manageToken, success } = props;
   const titleText = note.title ? escapeHtml(note.title) : 'Tanpa judul';
+  const successHtml = success ? `<div class="admin-alert success" style="margin-bottom: 20px;">${escapeHtml(success)}</div>` : '';
+
+  const editActionHtml = manageToken
+    ? `<a href="/kelola/${note.slug}/${manageToken}/edit">Edit catatan</a>`
+    : `<a href="/${note.slug}/edit">Edit catatan</a>`;
 
   const passwordActionHtml = manageToken
     ? `<a href="/kelola/${note.slug}/${manageToken}">Ubah password</a>`
@@ -24,11 +30,16 @@ export function renderNote(props: NoteViewProps): string {
 
   const passwordSpan = note.password ? `<span>Diproteksi password</span>` : '';
 
+  const isUpdated = note.updated_at && note.updated_at !== note.created_at;
+  const updatedSpan = isUpdated ? `<span>Diedit ${diffForHumans(note.updated_at)}</span>` : '';
+
   const content = `
 <article class="public-note wrap">
+ ${successHtml}
  <header class="public-note-head">
   <div><span class="detail-label">CATATAN ETULIS</span><h1>${titleText}</h1></div>
   <div class="public-note-actions">
+    ${editActionHtml}
     ${passwordActionHtml}
     <button type="button" onclick="navigator.clipboard.writeText(document.querySelector('#note-content').innerText);this.textContent='Tersalin'">Salin isi</button>
     <button type="button" onclick="navigator.clipboard.writeText(location.href);this.textContent='Link tersalin'">Salin link</button>
@@ -37,6 +48,7 @@ export function renderNote(props: NoteViewProps): string {
  <div class="public-note-meta">
    <span>${formatIndonesianDateTime(note.created_at)}</span>
    <span>${note.views} kali dilihat</span>
+   ${updatedSpan}
    ${passwordSpan}
    ${expirySpan}
  </div>
@@ -47,6 +59,7 @@ export function renderNote(props: NoteViewProps): string {
  <div class="public-note-bottom"><a href="/">Buat catatan baru</a></div>
 </article>
 `;
+
 
   const metaDesc = note.content.length > 150
     ? note.content.substring(0, 150).replace(/\s+/g, ' ') + '...'

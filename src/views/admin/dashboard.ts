@@ -54,6 +54,7 @@ export function renderAdminDashboard(props: AdminDashboardViewProps): string {
       <td>
         <div class="row-actions">
           <a href="/${escapeHtml(adminPath)}/catatan/${note.slug}">Lihat</a>
+          <a href="/${escapeHtml(adminPath)}/catatan/${note.slug}/edit" style="color:var(--primary); font-weight:700;">Edit</a>
           <button type="button" class="password-action" onclick="document.querySelector('#password-modal-${
             note.id
           }').showModal()">Password</button>
@@ -115,6 +116,7 @@ export function renderAdminDashboard(props: AdminDashboardViewProps): string {
  <div class="admin-topbar">
   <div><span class="admin-label">ADMIN DASHBOARD</span><h1>Catatan</h1></div>
   <div class="admin-top-actions">
+    <a class="admin-ghost" href="/${escapeHtml(adminPath)}/riwayat-edit">Riwayat Edit</a>
     <a class="admin-ghost" href="/${escapeHtml(adminPath)}/pengaturan/password">Ubah password</a>
     <a class="admin-primary" href="/">Buat catatan</a>
     <form method="POST" action="/${escapeHtml(adminPath)}/logout">
