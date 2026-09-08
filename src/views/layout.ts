@@ -158,21 +158,6 @@ export function renderLayout(content: string, options: LayoutOptions = {}): stri
   const jsonLdData = options.jsonLd ? options.jsonLd : defaultJsonLd;
   const jsonLdScript = `<script type="application/ld+json">${JSON.stringify(jsonLdData)}</script>`;
 
-  const desktopSidePromotionsHtml = `
-<aside class="side-promotion side-promotion-left" aria-label="Promosi">
- <span>Promosi</span>
- <a href="https://akundigital.id" target="_blank" rel="noopener sponsored">
-  <img src="/images/ads/ads1.png" alt="Promosi AkunDigital Marketplace" width="758" height="2075" loading="lazy">
- </a>
-</aside>
-<aside class="side-promotion side-promotion-right" aria-label="Promosi">
- <span>Promosi</span>
- <a href="https://akundigital.id" target="_blank" rel="noopener sponsored">
-  <img src="/images/ads/ads2.png" alt="Promosi AkunDigital Marketplace" width="758" height="2075" loading="lazy">
- </a>
-</aside>
-`;
-
   return `<!doctype html>
 <html lang="id" dir="ltr">
 <head>
@@ -234,7 +219,6 @@ export function renderLayout(content: string, options: LayoutOptions = {}): stri
  </div>
 </header>
 <main>${content}</main>
-${showPromotion ? desktopSidePromotionsHtml : ''}
 ${showPromotion && !customInlinePromotion ? getInlinePromotionsHtml() : ''}
 ${showPromotion ? getPromoPopupHtml() : ''}
 <footer class="site-footer">
